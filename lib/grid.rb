@@ -1,4 +1,4 @@
-require_relative 'cell.rb'
+require_relative 'cell'
 
 class Grid
 
@@ -12,15 +12,21 @@ class Grid
 
 
 	def solved?
-		# !@cells.include?(0)
-		@cells.flatten.all?{|i| i.value!=0}
+		@cells.all?{|i| i.value!=0}
 	end
 
 	attr_accessor :cells
 
 
 	def solve
-	false
+		while !self.solved?
+			@cells.each do |cell| 
+				if !cell.filled_out?
+					neighbours(cell)
+					cell.solve_cell
+				end
+			end		
+		end
 	end
 
 	def rows
@@ -38,15 +44,13 @@ class Grid
 
 
 	def neighbours(cell)
-		[rows, columns,boxes].map {|z| z.select {|x| x.include?(cell)} }.flatten
+		cell.neighbours = ([rows, columns, boxes].map {|z| z.select {|x| x.include?(cell)} }.flatten).map {|x| x.value}
 	end
 
 
+	
 end
 
-
-# grid = Grid.new('015003002000100906270068430490002017501040380003905000900081040860070025037204600')
-# print grid.cells
 
 
 
